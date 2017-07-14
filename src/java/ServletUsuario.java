@@ -16,40 +16,47 @@ public class ServletUsuario extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Usuario usu = new Usuario();
             HttpSession sesion = request.getSession();
-            if (request.getParameter("accion").equals("ingresar")) {
-                String username = request.getParameter("username");
-                String password = request.getParameter("password");
-                usu.setUsername(username);
-                usu.setPassword(password);
-                
-                if (usu.validar() == 1) {
-                    sesion.setAttribute("conectado", "true-admin");
-                    response.sendRedirect("administrator/inicio.jsp");
-                }else if(usu.validar()==2){
-                    sesion.setAttribute("conectado", "true-student");
-                    response.sendRedirect("student/inicio.jsp");
-                } else {
-                    sesion.setAttribute("conectado", "false");
+            if (request.getParameter("delete") == null) {
+                if (request.getParameter("accion").equals("ingresar")) {
+                    String username = request.getParameter("username");
+                    String password = request.getParameter("password");
+                    usu.setUsername(username);
+                    usu.setPassword(password);
+
+                    if (usu.validar() == 1) {
+                        sesion.setAttribute("conectado", "true-admin");
+                        response.sendRedirect("administrator/inicio.jsp");
+                    } else if (usu.validar() == 2) {
+                        sesion.setAttribute("conectado", "true-student");
+                        response.sendRedirect("student/inicio.jsp");
+                    } else {
+                        sesion.setAttribute("conectado", "false");
+                        response.sendRedirect("index.jsp");
+                    }
+                } else if (request.getParameter("accion").equals("registrar")) {
+                    String name = request.getParameter("name");
+                    String apepat = request.getParameter("apepat");
+                    String apemat = request.getParameter("apemat");
+                    String username = request.getParameter("username");
+                    String password = request.getParameter("password");
+                    String role_id = request.getParameter("role_id");
+                    usu.setName(name);
+                    usu.setApepat(apepat);
+                    usu.setApemat(apemat);
+                    usu.setUsername(username);
+                    usu.setPassword(password);
+                    usu.setRole_id(role_id);
+                    usu.save();
+                    response.sendRedirect("administrator/usuarios/index.jsp");
+                } else if (request.getParameter("accion").equals("cerrar")) {
+                    sesion.invalidate();
                     response.sendRedirect("index.jsp");
                 }
-            }else if(request.getParameter("accion").equals("registrar")){
-                String name=request.getParameter("name");
-                String apepat=request.getParameter("apepat");
-                String apemat=request.getParameter("apemat");
-                String username=request.getParameter("username");
-                String password=request.getParameter("password");
-                String role_id=request.getParameter("role_id");
-                usu.setName(name);
-                usu.setApepat(apepat);
-                usu.setApemat(apemat);
-                usu.setUsername(username);
-                usu.setPassword(password);
-                usu.setRole_id(role_id);
-                usu.save();
-                response.sendRedirect("administrator/usuarios/index.jsp");
-            }else if(request.getParameter("accion").equals("cerrar")){
-                sesion.invalidate();
-                response.sendRedirect("index.jsp");
+            } else {
+                String id = request.getParameter("delete");
+                usu.setId(id);
+                usu.delete();
+                out.println(" Su registro ha sido eliminado !!! <a href=administrator/cursos/index.jsp>Volver </a>");
             }
 
         }

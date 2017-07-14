@@ -118,6 +118,12 @@ public class Usuario {
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
-    
+    public void update(){
+         con.runSql("update courses set name='"+this.getName()+"',apepat='"+this.getApepat()+"',apemat='"+this.getApemat()+"',role_id='"+this.getRole_id()+"' where id='"+this.getId()+"'"); 
+    }
+    public void delete(){
+       con.runSql("update users set state='pasivo' where id='"+this.getId()+"'");
+    }
+
     
 }
